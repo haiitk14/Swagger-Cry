@@ -1,0 +1,75 @@
+definitions:
+  ViewUsers:
+    type: object
+    properties:
+      online:
+        type: array
+        items:
+          $ref: "#/definitions/User"
+      offline:
+        type: array
+        items:
+          $ref: "#/definitions/ConnectionUser"
+  ViewUnits:
+    type: object
+    properties:
+      kernelMonetary:
+        $ref: "#/definitions/MonetaryCurrency"
+      monetary:
+        $ref: "#/definitions/MonetaryCurrency"
+      listUnit:
+        $ref: "#/definitions/ListUnit"
+  NewUser:
+    type: object
+    properties:
+      username:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      confirmpassword:
+        type: string
+  Connection:
+    type: object
+    properties:
+      ID_USER:
+        type: number
+      DATE_CONNECTION:
+        type: string
+      DATE_DISCONNECTION:
+        type: string
+      TYPE_DISCONNECTION:
+        type: string
+      USERNAM:
+        type: string
+      PERIOD:
+        type: string
+  ConnectionUser:
+    type: object
+    properties:
+      ID_USER:
+        type: number
+      DATE_CONNECTION:
+        type: string
+      DATE_DISCONNECTION:
+        type: string
+      TYPE_DISCONNECTION:
+        type: string
+      USERNAM:
+        type: string
+  ListUnit:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: integer
+      SYMBOL:
+        type: string
+      COEFF_A:
+        type: number
+      COEFF_B:
+        type: number
+      symbolSelect:
+        $ref: "#/definitions/Units"

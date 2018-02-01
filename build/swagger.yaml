@@ -1,0 +1,5133 @@
+swagger: '2.0'
+info:
+  version: 0.0.1
+  title: CRYOSOFT API
+host: 'localhost:10010'
+basePath: /api/v1
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /login:
+    post:
+      security: []
+      operationId: login
+      parameters:
+        - in: body
+          name: body
+          description: The username/password
+          required: true
+          schema:
+            $ref: '#/definitions/Login'
+      responses:
+        '200':
+          description: login success
+          schema:
+            $ref: '#/definitions/ViewLogin'
+        '403':
+          description: >-
+            login failed (may be incorrect password or username, user got
+            banned)
+  /logout:
+    get:
+      operationId: logout
+      security: []
+      responses:
+        '200':
+          description: logout success
+  /admin/users:
+    get:
+      operationId: getUsers
+      tags:
+        - admin
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ViewUsers'
+    put:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: newUser
+      tags:
+        - admin
+      description: Create new user
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body create new user
+          schema:
+            $ref: '#/definitions/NewUser'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  '/admin/users/{id}':
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: updateUser
+      tags:
+        - admin
+      description: update user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - name: body
+          in: body
+          required: true
+          description: body update user
+          schema:
+            $ref: '#/definitions/NewUser'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: array
+            items:
+              type: integer
+        '422':
+          description: missing data
+    delete:
+      operationId: deleteUser
+      tags:
+        - admin
+      description: delete user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: user was deleted successfully
+  '/admin/connections/{id}':
+    post:
+      operationId: disconnectUser
+      tags:
+        - admin
+      parameters:
+        - name: id
+          in: path
+          description: User id
+          required: true
+          type: integer
+        - name: reset
+          in: query
+          description: status disconnect user
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: User was deleted successfully
+  /admin/connections:
+    get:
+      operationId: loadConnections
+      tags:
+        - admin
+      parameters:
+        - name: record
+          in: query
+          description: number record connections
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Connection'
+  /admin/units:
+    get:
+      operationId: units
+      responses:
+        '200':
+          description: ok
+          schema:
+            $ref: '#/definitions/ViewUnits'
+  /unit:
+    put:
+      operationId: createUnit
+      description: create a new unit
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: unit
+          description: The monetary currency to create.
+          schema:
+            $ref: '#/definitions/Units'
+      responses:
+        '200':
+          schema:
+            $ref: '#/definitions/Units'
+          description: 'OK, created'
+        '500':
+          description: Not ok
+          schema:
+            $ref: '#/definitions/Error'
+    patch:
+      operationId: saveUnit
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/Units'
+      responses:
+        '200':
+          description: edit Unit By Id
+          schema:
+            $ref: '#/definitions/Units'
+        '500':
+          description: Not ok
+          schema:
+            $ref: '#/definitions/Error'
+  /monetaryCurrency:
+    put:
+      operationId: createMonetaryCurrency
+      description: create a new monetary currency
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: monetaryCurrency
+          description: The monetary currency to create.
+          schema:
+            $ref: '#/definitions/MonetaryCurrency'
+      responses:
+        '200':
+          schema:
+            $ref: '#/definitions/MonetaryCurrency'
+          description: 'OK, created'
+    patch:
+      operationId: saveMonetaryCurrency
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/MonetaryCurrency'
+      responses:
+        '200':
+          description: edit MonetaryCurrency By Id
+          schema:
+            $ref: '#/definitions/MonetaryCurrency'
+  '/monetaryCurrency/{id}':
+    get:
+      operationId: getMonetaryCurrencyById
+      parameters:
+        - name: id
+          in: path
+          description: MonetaryCurrency ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: get MonetaryCurrency By Id
+          schema:
+            $ref: '#/definitions/MonetaryCurrency'
+  /calculator/startcalcul:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: startCalcul
+      tags:
+        - calculator
+      description: Run Kernal Brain Calcul
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body save start Calcul
+          schema:
+            $ref: '#/definitions/StartCalcul'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: array
+            items:
+              type: integer
+        '422':
+          description: missing data
+  /calculator/calculoptim:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: calculOptim
+      tags:
+        - calculator
+      description: save Calcul Optim
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body save start Calcul
+          schema:
+            $ref: '#/definitions/StartCalcul'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: array
+            items:
+              type: integer
+        '422':
+          description: missing data
+  /calculator/brainoptim:
+    get:
+      operationId: getBrainOptim
+      tags:
+        - calculator
+      description: get brain optim
+      parameters:
+        - name: idStudyEquipment
+          in: query
+          type: integer
+        - name: brainoptim
+          in: query
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ViewBrainOptim'
+  /calculator/startcalculoptim:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: startCalculOptim
+      tags:
+        - calculator
+      description: Run Kernal Calcul Optim
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body run start Calcul optim
+          schema:
+            $ref: '#/definitions/ViewBrainOptim'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: array
+            items:
+              type: integer
+        '422':
+          description: missing data
+  /calculator/progressbar:
+    get:
+      operationId: getProgressBarStudyEquipment
+      tags:
+        - calculator
+      description: get study equipment
+      parameters:
+        - name: idStudy
+          in: query
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ViewProgressBar'
+  /calculator/startcalculate:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: startCalculate
+      tags:
+        - calculator
+      description: Run Kernal calculate
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body save startCalculate
+          schema:
+            $ref: '#/definitions/StartCalculate'
+      responses:
+        '200':
+          description: Run kernal ok
+          schema:
+            type: array
+            items:
+              type: integer
+        '422':
+          description: missing data
+  /calculator/optimumcalculator:
+    get:
+      operationId: getOptimumCalculator
+      tags:
+        - calculator
+      description: get optimumcalculator
+      parameters:
+        - name: idStudy
+          in: query
+          type: integer
+        - name: idStudyEquipment
+          in: query
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/OptimumCalculator'
+  /meshparamdef:
+    get:
+      operationId: getMyMeshParamDef
+      responses:
+        '200':
+          description: get meshparamdef by iduser
+          schema:
+            $ref: '#/definitions/MeshParamDef'
+  /temprecordptsdef:
+    get:
+      operationId: getMyTempRecordPtsDef
+      responses:
+        '200':
+          description: get tempRecordPtsDef by iduser
+          schema:
+            $ref: '#/definitions/TempRecordPtsDef'
+  /calculationparametersdef:
+    get:
+      operationId: getMyCalculationParametersDef
+      responses:
+        '200':
+          description: get calculationParametersDef by iduser
+          schema:
+            $ref: '#/definitions/CalculationParametersDef'
+  /checkcontrolview:
+    get:
+      operationId: checkControlView
+      description: get array checkcontrol
+      parameters:
+        - name: idStudy
+          in: query
+          type: integer
+        - name: idProd
+          in: query
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/CheckControlView'
+  /checkcontrol:
+    get:
+      operationId: checkControl
+      description: get checkcontrol
+      parameters:
+        - name: idStudy
+          in: query
+          type: integer
+        - name: idProd
+          in: query
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/CheckControl'
+  /savemeshparamdef:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: saveMyMeshParamDef
+      description: save MeshParamDef
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body save meshParamDef
+          schema:
+            $ref: '#/definitions/MeshParamDefSave'
+      responses:
+        '200':
+          description: ok
+        '422':
+          description: missing data
+  /savetemprecordptsdef:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: saveMyTempRecordPtsDef
+      description: save TempRecordPtsDef by id
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body save TempRecordPtsDef
+          schema:
+            $ref: '#/definitions/TempRecordPtsDefSave'
+      responses:
+        '200':
+          description: ok
+        '422':
+          description: missing data
+  /savecalculationparametersdef:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: saveMyCalculationParametersDef
+      description: save CalculationParametersDef by id
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body save CalculationParametersDef
+          schema:
+            $ref: '#/definitions/CalculationParametersDefSave'
+      responses:
+        '200':
+          description: ok
+        '422':
+          description: missing data
+  '/studies/{id}/calculate':
+    get:
+      operationId: startStudyCalculation
+      parameters:
+        - name: id
+          in: path
+          description: Study ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Successful retrieve the study
+          schema:
+            type: array
+            items:
+              type: integer
+  /studyequipment/braincalculate:
+    get:
+      operationId: getStudyEquipmentCalculation
+      parameters:
+        - name: idStudy
+          in: query
+          required: true
+          type: integer
+        - name: idStudyEquipment
+          in: query
+          required: true
+          type: integer
+        - name: checkOptim
+          in: query
+          required: true
+          type: boolean
+        - name: type
+          in: query
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/BrainCalculator'
+  /studyequipment/startbraincalculate:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: startBrainCalculate
+      description: Run Kernal Brain Calculate
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body save startBrainCalculate
+          schema:
+            $ref: '#/definitions/StartBrainCalculate'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  '/studies/{id}/equipment/unitData':
+    get:
+      operationId: getUnitData
+      description: 'Get Price, interval Width Lenght'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UnitDataEquipment'
+  '/studies/{id}/equipment/price':
+    post:
+      operationId: updatePrice
+      description: Update price Studies
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - name: price
+          in: query
+          required: true
+          type: number
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  '/studies/{id}/equipment/interval':
+    post:
+      operationId: updateInterval
+      description: Update Interval Lenght Width Studies
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - name: lenght
+          in: query
+          required: true
+          type: number
+        - name: width
+          in: query
+          required: true
+          type: number
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  '/studies/{id}/clone':
+    put:
+      operationId: saveStudyAs
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Study id
+          type: integer
+        - name: name
+          in: query
+          required: true
+          description: Study name
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/Study'
+        '500':
+          description: Not ok
+          schema:
+            $ref: '#/definitions/Error'
+  '/studies/{id}/getListLine':
+    get:
+      operationId: loadPipeline
+      parameters:
+        - name: id
+          in: path
+          require: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ViewLineList'
+  '/symbol/{idStudy}':
+    get:
+      operationId: getSymbol
+      description: get symbol study
+      parameters:
+        - name: idStudy
+          in: path
+          description: Study ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/Symbol'
+  '/proInfoStudy/{idStudy}':
+    get:
+      operationId: getProInfoStudy
+      description: get pro info study
+      parameters:
+        - name: idStudy
+          in: path
+          description: Study ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/OptimumResultAna'
+  '/optimum/headBalance/{idStudy}':
+    get:
+      operationId: getOptimumHeadBalance
+      description: get optimum head balance
+      parameters:
+        - name: idStudy
+          in: path
+          description: Study ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/HeadBalanceResult'
+  '/optimum/headBalanceMax/{idStudy}':
+    get:
+      operationId: getOptimumHeadBalanceMax
+      description: get optimum head balance max
+      parameters:
+        - name: idStudy
+          in: path
+          description: get optimum head balance max results
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/HeadBalanceMaxResult'
+  '/optimum/equipSizing/{idStudyEquipment}':
+    get:
+      operationId: getEquipSizing
+      description: get equip sizing
+      parameters:
+        - name: idStudyEquipment
+          in: path
+          description: StudyEquipment ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/EquipSizing'
+  /estimation/headBalance:
+    get:
+      operationId: getEstimationHeadBalance
+      description: get estimation head balance
+      parameters:
+        - name: idStudy
+          in: query
+          description: Study ID
+          required: true
+          type: integer
+        - name: tr
+          in: query
+          description: Control temperature
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/EstimationHeadBalanceResult'
+  '/estimation/trCalculate/{idStudyEquipment}':
+    get:
+      operationId: temperatureCalculation
+      description: get temperature calculation data
+      parameters:
+        - name: idStudyEquipment
+          in: path
+          description: StudyEquipment ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ViewTrCalculate'
+  '/estimation/viewEquipTr/{idStudyEquipment}':
+    get:
+      operationId: viewEquipTr
+      description: view Equipment Temperature
+      parameters:
+        - name: idStudyEquipment
+          in: path
+          description: StudyEquipment ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ViewEquipTr'
+  '/common/consumption/{idStudy}':
+    get:
+      operationId: getAnalyticalConsumption
+      description: get consumption results
+      parameters:
+        - name: idStudy
+          in: path
+          description: Study ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ConsumptionResult'
+  '/common/economic/{idStudy}':
+    get:
+      operationId: getAnalyticalEconomic
+      description: get economic results
+      parameters:
+        - name: idStudy
+          in: path
+          description: Study ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/EconomicResult'
+  '/studyEquipment/{id}/productChart':
+    get:
+      description: get study equipment product chart
+      parameters:
+        - name: id
+          in: path
+          description: StudyEquipment ID
+          required: true
+          type: integer
+      operationId: getstudyEquipmentProductChart
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/StudyEquipment'
+  '/studyEquipment/{id}/recordPosition':
+    get:
+      description: get study equipment record position
+      parameters:
+        - name: id
+          in: path
+          description: StudyEquipment ID
+          required: true
+          type: integer
+      operationId: getRecordPosition
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/RecordPosition'
+  '/studies/{id}/tempRecordPts':
+    get:
+      operationId: getTempRecordPts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/TempRecordPts'
+  '/studies/{id}/productElmt':
+    get:
+      operationId: getProductElmt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ProductElmt'
+  '/studies/{id}/meshPoints':
+    get:
+      operationId: getMeshPoints
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/MeshPoints'
+  '/output/sizingresult/{idStudy}/optimum':
+    get:
+      operationId: sizingOptimumResult
+      description: get sizng result optimum
+      parameters:
+        - name: idStudy
+          in: path
+          description: Study ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ViewSizingResultOptimum'
+  /output/sizingresult/estimation:
+    get:
+      operationId: sizingEstimationResult
+      description: sizing result estimation
+      parameters:
+        - name: idStudy
+          in: query
+          description: Study ID
+          required: true
+          type: integer
+        - name: tr
+          in: query
+          description: Control temperature
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ViewSizingEstimationResult'
+  '/output/temperatureProfile/{idStudyEquipment}':
+    get:
+      operationId: temperatureProfile
+      description: get temperature profile
+      parameters:
+        - name: idStudyEquipment
+          in: path
+          description: StudyEquipment ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ViewTemperatureProfile'
+  /output/location:
+    get:
+      operationId: location
+      description: get location product chart
+      parameters:
+        - name: idStudy
+          in: query
+          description: Study ID
+          required: true
+          type: integer
+        - name: idStudyEquipment
+          in: query
+          description: StudyEquipment ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ViewLocation'
+  /output/heatExchange:
+    get:
+      operationId: heatExchange
+      description: get heat exchange product chart
+      parameters:
+        - name: idStudy
+          in: query
+          description: Study ID
+          required: true
+          type: integer
+        - name: idStudyEquipment
+          in: query
+          description: StudyEquipment ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ViewHeatExchange'
+  /output/timeBased:
+    get:
+      operationId: timeBased
+      description: get based product chart
+      parameters:
+        - name: idStudy
+          in: query
+          description: Study ID
+          required: true
+          type: integer
+        - name: idStudyEquipment
+          in: query
+          description: StudyEquipment ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ViewTimeBased'
+  /output/productSection:
+    get:
+      operationId: productSection
+      description: get product section product chart
+      parameters:
+        - name: idStudy
+          in: query
+          description: Study ID
+          required: true
+          type: integer
+        - name: idStudyEquipment
+          in: query
+          description: StudyEquipment ID
+          required: true
+          type: integer
+        - name: selectedAxe
+          in: query
+          description: Axe select
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ViewProductSection'
+  /output/saveTempRecordPts:
+    post:
+      operationId: saveTempRecordPts
+      parameters:
+        - name: body
+          in: body
+          description: body
+          required: true
+          schema:
+            $ref: '#/definitions/saveTempRecordPts'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ViewProductSection'
+        '500':
+          description: Not ok
+          schema:
+            $ref: '#/definitions/Error'
+  /output/productchart2D:
+    get:
+      operationId: productchart2D
+      description: get product chart 2d chart
+      parameters:
+        - name: idStudy
+          in: query
+          description: Study ID
+          required: true
+          type: integer
+        - name: idStudyEquipment
+          in: query
+          description: StudyEquipment ID
+          required: true
+          type: integer
+        - name: selectedPlan
+          in: query
+          description: Plan select
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ViewProductchart2D'
+  /referencedata/component:
+    get:
+      operationId: getDataComponent
+      tags:
+        - referencedata
+      parameters:
+        - name: compfamily
+          in: query
+          required: true
+          type: string
+      description: Get a list of family component
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ViewComponent'
+    put:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: saveDataComponent
+      tags:
+        - referencedata
+      description: Save data component
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body save Component
+          schema:
+            $ref: '#/definitions/ViewComponent'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  '/referencedata/component/{id}':
+    get:
+      operationId: getTemperaturesByIdComp
+      tags:
+        - referencedata
+      parameters:
+        - name: id
+          in: path
+          description: Component Id
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Successful retrieve the Temperatures
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ViewTemperature'
+    delete:
+      operationId: deleteComponent
+      tags:
+        - referencedata
+      description: delete component
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: delete component successfully
+          schema:
+            type: integer
+  /referencedata/calculatefreeze:
+    put:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: calculateFreeze
+      tags:
+        - referencedata
+      description: run calculatefreeze component
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body run calculatefreeze
+          schema:
+            $ref: '#/definitions/ViewComponent'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  /referencedata/calculate:
+    put:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: startFCCalculate
+      tags:
+        - referencedata
+      description: run calculate component
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body run calculate
+          schema:
+            $ref: '#/definitions/ViewComponent'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  /referencedata/components:
+    get:
+      operationId: getMyComponent
+      tags:
+        - referencedata
+      description: Get list my component
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/MyComponent'
+  '/referencedata/compenths/{idComp}':
+    get:
+      operationId: getCompenthsByIdComp
+      tags:
+        - referencedata
+      parameters:
+        - name: idComp
+          in: path
+          description: Compenth id
+          type: integer
+      description: Get list compenth by Id compenth
+      responses:
+        '200':
+          description: Successful retrieve the compenths
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Compenth'
+  '/referencedata/compenth/{id}':
+    get:
+      operationId: getCompenthById
+      tags:
+        - referencedata
+      parameters:
+        - name: id
+          in: path
+          description: Compenth id
+          type: integer
+      description: Get compenth by id
+      responses:
+        '200':
+          description: Successful retrieve the compenth
+          schema:
+            $ref: '#/definitions/Compenth'
+  /referencedata/compenth:
+    put:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: updateCompenth
+      tags:
+        - referencedata
+      description: Save data compenth
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body save Compenth
+          schema:
+            $ref: '#/definitions/Compenth'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  /referencedata/packing:
+    get:
+      operationId: findRefPackingElmt
+      tags:
+        - referencedata
+      description: Get a list of packingelmt
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ViewPackingElmt'
+    put:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: newPacking
+      tags:
+        - referencedata
+      description: Create new packing
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body create new packing
+          schema:
+            $ref: '#/definitions/NewPacking'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  '/referencedata/packing/{id}':
+    delete:
+      operationId: deletePacking
+      tags:
+        - referencedata
+      description: delete Packing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: packing delete successfully
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: updatePacking
+      tags:
+        - referencedata
+      description: update packing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - name: body
+          in: body
+          required: true
+          description: body update packing
+          schema:
+            $ref: '#/definitions/NewPacking'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: array
+            items:
+              type: integer
+        '422':
+          description: missing data
+    put:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: saveAsPacking
+      tags:
+        - referencedata
+      description: save as packing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - name: body
+          in: body
+          required: true
+          description: body save as packing
+          schema:
+            $ref: '#/definitions/NewPacking'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  /referencedata/pipeline:
+    get:
+      operationId: findRefPipeline
+      tags:
+        - referencedata
+      description: Get a list of pipeLineElmt
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ViewPipeLineElmt'
+    put:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: newPipeLine
+      tags:
+        - referencedata
+      description: Create new pipeline
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body create new pipeline
+          schema:
+            $ref: '#/definitions/PipeLineElmt'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  '/referencedata/pipeline/{id}':
+    delete:
+      operationId: deletePipeLine
+      tags:
+        - referencedata
+      description: delete pipe line
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: pipe line delete successfully
+          schema:
+            type: integer
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: updatePipeLine
+      tags:
+        - referencedata
+      description: update pipe line
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - name: body
+          in: body
+          required: true
+          description: body update pipe line
+          schema:
+            $ref: '#/definitions/PipeLineElmt'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: integer
+        '422':
+          description: missing data
+    put:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: saveAsPipeLine
+      tags:
+        - referencedata
+      description: save as pipe line
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - name: name
+          in: query
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  /translation/linetype:
+    get:
+      operationId: getListLineType
+      description: Get list line type
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Translation'
+  /translation/energies:
+    get:
+      operationId: getListEnergies
+      description: Get list energies (list cooling family)
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Translation'
+  /referencedata/equipments:
+    get:
+      operationId: findRefEquipment
+      tags:
+        - referencedata
+      description: Get a list of equipment
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ViewEquipment'
+    put:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: newEquipment
+      tags:
+        - referencedata
+      description: Create new equipment
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: body create new equipment
+          schema:
+            $ref: '#/definitions/NewEquipment'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  '/translations/{lang}/components':
+    get:
+      operationId: getComponentTranslations
+      security: []
+      parameters:
+        - name: lang
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Translation'
+  '/translations/{lang}/packings':
+    get:
+      operationId: getPackingTranslations
+      security: []
+      parameters:
+        - name: lang
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Translation'
+  /studies:
+    get:
+      operationId: findStudies
+      description: Get a list of studies
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ViewOpenStudy'
+    put:
+      operationId: createStudy
+      description: create a new study
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: study
+          description: The study to create.
+          schema:
+            $ref: '#/definitions/Study'
+      responses:
+        '200':
+          schema:
+            $ref: '#/definitions/Study'
+          description: 'OK, created'
+  '/studies/{id}':
+    patch:
+      operationId: saveStudy
+      parameters:
+        - name: id
+          in: path
+          description: Study ID
+          required: true
+          type: integer
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/Study'
+      responses:
+        '200':
+          description: todo
+    get:
+      operationId: getStudyById
+      parameters:
+        - name: id
+          in: path
+          description: Study ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Successful retrieve the study
+          schema:
+            $ref: '#/definitions/Study'
+    delete:
+      operationId: deleteStudyById
+      parameters:
+        - name: id
+          in: path
+          description: Study ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: study was deleted successfully
+  '/studies/{id}/open':
+    get:
+      operationId: openStudy
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id study to open
+          type: integer
+      responses:
+        '200':
+          description: OK
+  '/studies/{id}/product':
+    post:
+      operationId: updateProduct
+      parameters:
+        - name: id
+          in: path
+          description: study ID
+          required: true
+          type: integer
+        - name: updateParams
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ProductUpdateParams'
+      responses:
+        '200':
+          description: ok
+        '422':
+          description: missing data
+    put:
+      operationId: newProduct
+      parameters:
+        - name: id
+          in: path
+          description: study ID
+          required: true
+          type: integer
+        - name: name
+          in: query
+          description: product name
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ok
+  '/studies/{id}/refreshMesh':
+    get:
+      operationId: refreshMesh
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: refresh mesh of study
+          type: integer
+      responses:
+        '200':
+          description: OK
+  '/studies/{id}/equipments':
+    get:
+      operationId: getStudyEquipments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ViewStudyEquipment'
+    put:
+      operationId: addEquipment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - name: idEquip
+          in: query
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: ok
+  '/studies/{id}/equipments/{idEquip}':
+    delete:
+      operationId: removeStudyEquipment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - name: idEquip
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: ok
+  '/studies/{id}/comment':
+    get:
+      operationId: getStudyComment
+      parameters:
+        - name: id
+          in: path
+          type: integer
+      responses:
+        '200':
+          description: ok
+    patch:
+      operationId: postStudyComment
+      parameters:
+        - name: id
+          in: path
+          type: integer
+        - name: comment
+          in: body
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ok
+  /equipments:
+    get:
+      description: get all available equipments
+      operationId: getEquipments
+      parameters:
+        - name: energy
+          in: query
+          type: integer
+        - name: manufacturer
+          in: query
+          type: integer
+        - name: family
+          in: query
+          type: integer
+        - name: equip_origin
+          type: integer
+          in: query
+        - name: process_type
+          in: query
+          type: integer
+        - name: model
+          in: query
+          type: integer
+        - name: size
+          in: query
+          type: integer
+      responses:
+        '200':
+          description: todo ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Equipment'
+  '/equipments/{id}':
+    get:
+      description: get equipment by id
+      parameters:
+        - name: id
+          in: path
+          description: Equipment ID
+          required: true
+          type: integer
+      operationId: getEquipmentById
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/Equipment'
+  '/studyEquipment/{id}':
+    get:
+      description: get study equipment by id
+      parameters:
+        - name: id
+          in: path
+          description: StudyEquipment ID
+          required: true
+          type: integer
+      operationId: getStudyEquipmentById
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/StudyEquipment'
+  '/productions/{id}':
+    get:
+      operationId: getProductionById
+      description: get production by id
+      parameters:
+        - name: id
+          in: path
+          description: Production ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/Production'
+    patch:
+      operationId: saveProduction
+      parameters:
+        - name: id
+          in: path
+          description: Production ID
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: todo
+          schema:
+            $ref: '#/definitions/Production'
+      responses:
+        '200':
+          description: todo
+  '/products/{id}':
+    get:
+      operationId: getProductById
+      description: get product by id
+      parameters:
+        - name: id
+          in: path
+          description: Product ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/Product'
+  '/products/{id}/view':
+    get:
+      operationId: getProductViewModel
+      description: get product view model
+      parameters:
+        - name: id
+          in: path
+          description: Product ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ViewProduct'
+  '/products/{id}/elements':
+    get:
+      operationId: getElementsByProductId
+      description: get elements of a products
+      parameters:
+        - name: id
+          in: path
+          description: Product ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProductElmt'
+    put:
+      operationId: appendElementsToProduct
+      description: append elements to product
+      parameters:
+        - name: id
+          in: path
+          description: Product ID
+          required: true
+          type: integer
+        - name: componentId
+          required: true
+          in: query
+          type: integer
+        - name: shapeId
+          required: true
+          in: query
+          type: integer
+        - name: dim1
+          required: false
+          in: query
+          type: number
+        - name: dim3
+          required: false
+          in: query
+          type: number
+      responses:
+        '200':
+          description: todo
+        '500':
+          description: server error
+    delete:
+      operationId: removeProductElement
+      description: remove a product element
+      parameters:
+        - name: id
+          in: path
+          description: Product ID
+          required: true
+          type: integer
+        - name: elementId
+          required: true
+          in: query
+          type: integer
+      responses:
+        '200':
+          description: todo
+        '500':
+          description: server error
+    post:
+      operationId: updateProductElement
+      description: update elements to product
+      parameters:
+        - name: id
+          in: path
+          description: Product ID
+          required: true
+          type: integer
+        - name: elementId
+          required: true
+          in: query
+          type: integer
+        - name: description
+          required: false
+          in: query
+          type: string
+        - name: dim2
+          required: false
+          in: query
+          type: number
+        - name: computedmass
+          required: false
+          in: query
+          type: number
+        - name: realmass
+          required: false
+          in: query
+          type: number
+      responses:
+        '200':
+          description: todo
+        '500':
+          description: server error
+  '/productElmts/{id}/moveup':
+    get:
+      operationId: productElementMoveUp
+      description: move a product element up
+      parameters:
+        - name: id
+          in: path
+          description: element ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+        '500':
+          description: server error
+  '/productElmts/{id}/movedown':
+    get:
+      operationId: productElementMoveDown
+      description: move a product element down
+      parameters:
+        - name: id
+          in: path
+          description: element ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: todo
+        '500':
+          description: server error
+  /components:
+    get:
+      operationId: findComponents
+      description: find available components by filter
+      parameters:
+        - name: compfamily
+          in: query
+          type: integer
+        - name: subfamily
+          in: query
+          type: integer
+        - name: waterpercent
+          in: query
+          type: integer
+      responses:
+        '200':
+          description: todo
+          schema:
+            $ref: '#/definitions/ViewComponents'
+  /users:
+    get:
+      operationId: getActiveUsers
+      description: todo
+      responses:
+        '200':
+          description: todo
+  /shapes:
+    get:
+      operationId: getShapes
+      description: get available shapes
+      responses:
+        '200':
+          description: todo
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Shape'
+  /packingElements:
+    get:
+      operationId: findPackingElements
+      description: get available packing elements
+      responses:
+        '200':
+          description: todo
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PackingElement'
+  /packingLayers:
+    get:
+      operationId: findPackingLayers
+      description: get packing layers
+      responses:
+        '200':
+          description: todo
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PackingLayer'
+  '/studies/{id}/packingLayers':
+    get:
+      operationId: getStudyPackingLayers
+      description: get StudyPackingLayers
+      parameters:
+        - name: id
+          description: study id
+          type: integer
+          in: path
+          required: true
+      responses:
+        '200':
+          description: ToDo
+          schema:
+            $ref: '#/definitions/ViewPackingLayer'
+    post:
+      operationId: savePacking
+      description: save packing
+      parameters:
+        - name: id
+          description: study id
+          type: integer
+          in: path
+          required: true
+        - name: body
+          in: body
+          description: body
+          required: true
+          schema:
+            $ref: '#/definitions/SavePackingLayer'
+      responses:
+        '200':
+          description: ToDo
+  '/products/{id}/meshView':
+    get:
+      operationId: getMeshView
+      description: get mesh view of product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id of product
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ViewMesh'
+  '/products/{idProd}/generateMesh':
+    post:
+      operationId: generateMesh
+      description: generate product mesh
+      parameters:
+        - name: idProd
+          in: path
+          required: true
+          type: integer
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/GenMeshParams'
+      responses:
+        '200':
+          description: generate mesh done successfully
+  '/products/{idProd}/defaultMesh':
+    post:
+      operationId: generateDefaultMesh
+      description: generate product default mesh
+      parameters:
+        - name: idProd
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: generate default mesh done successfully
+          schema:
+            $ref: '#/definitions/ViewMesh'
+  '/products/{idProd}/initTemperature':
+    post:
+      operationId: initTemperature
+      description: initialize temperature
+      parameters:
+        - name: idProd
+          in: path
+          required: true
+          type: integer
+        - name: initTemp
+          in: query
+          required: true
+          type: number
+      responses:
+        '200':
+          description: initialize temperature
+  /recentStudies:
+    get:
+      operationId: recentStudies
+      description: get my recent studies
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Study'
+  '/users/{id}/changepassword':
+    post:
+      operationId: changePassword
+      tags:
+        - profile
+      description: Change password
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - name: body
+          in: body
+          required: true
+          description: body password
+          schema:
+            $ref: '#/definitions/ChangePassword'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  /users/energies:
+    get:
+      operationId: getEnergies
+      tags:
+        - profile
+      description: get list Energies
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Translation'
+  /users/constructors:
+    get:
+      operationId: getConstructors
+      tags:
+        - profile
+      description: get list Constructors
+      parameters:
+        - name: idCooling
+          in: query
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Constructors'
+  /users/families:
+    get:
+      operationId: getFamilies
+      tags:
+        - profile
+      description: get list family (equipment series)
+      parameters:
+        - name: idCooling
+          in: query
+          required: false
+          type: integer
+        - name: manufacturerLabel
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Translation'
+  /users/origines:
+    get:
+      operationId: getOrigines
+      tags:
+        - profile
+      description: get list Origines (equipment Origines)
+      parameters:
+        - name: idCooling
+          in: query
+          required: false
+          type: integer
+        - name: manufacturerLabel
+          in: query
+          required: false
+          type: string
+        - name: idFamily
+          in: query
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Translation'
+  /users/processes:
+    get:
+      operationId: getProcesses
+      tags:
+        - profile
+      description: get list Processes (Processes type)
+      parameters:
+        - name: idCooling
+          in: query
+          required: false
+          type: integer
+        - name: manufacturerLabel
+          in: query
+          required: false
+          type: string
+        - name: idFamily
+          in: query
+          required: false
+          type: integer
+        - name: idStd
+          in: query
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Translation'
+  /users/models:
+    get:
+      operationId: getModels
+      tags:
+        - profile
+      description: get list Processes (Processes type)
+      parameters:
+        - name: idCooling
+          in: query
+          required: false
+          type: integer
+        - name: manufacturerLabel
+          in: query
+          required: false
+          type: string
+        - name: idFamily
+          in: query
+          required: false
+          type: integer
+        - name: idStd
+          in: query
+          required: false
+          type: integer
+        - name: idProcess
+          in: query
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Translation'
+  /users/lang:
+    get:
+      operationId: getLangue
+      tags:
+        - profile
+      description: get list langue
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Translation'
+  /users/monetary:
+    get:
+      operationId: getMonetary
+      tags:
+        - profile
+      description: get list Monetary
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/MonetaryCurrency'
+  '/users/{id}/units':
+    get:
+      operationId: getUnits
+      tags:
+        - profile
+      description: get list units user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Units'
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      operationId: updateUnits
+      tags:
+        - profile
+      description: update unit users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - name: body
+          in: body
+          required: true
+          description: body update unit users
+          schema:
+            $ref: '#/definitions/Profile'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: integer
+        '422':
+          description: missing data
+  '/users/{id}':
+    get:
+      operationId: getUser
+      description: get user by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: ok
+          schema:
+            $ref: '#/definitions/User'
+        '422':
+          description: missing data
+definitions:
+  Login:
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+  ViewLogin:
+    type: object
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/User'
+  User:
+    type: object
+    properties:
+      ID_USER:
+        type: integer
+      ID_MONETARY_CURRENCY:
+        type: integer
+      CODE_LANGUE:
+        type: integer
+      ID_CALC_PARAMSDEF:
+        type: integer
+      ID_TEMP_RECORD_PTS_DEF:
+        type: integer
+      USERNAM:
+        type: string
+      USERPRIO:
+        type: integer
+      TRACE_LEVEL:
+        type: integer
+      USER_ENERGY:
+        type: integer
+      USER_CONSTRUCTOR:
+        type: string
+      USER_FAMILY:
+        type: integer
+      USER_ORIGINE:
+        type: integer
+      USER_PROCESS:
+        type: integer
+      USER_MODEL:
+        type: integer
+      USERMAIL:
+        type: string
+      API_TOKEN:
+        type: string
+  ViewUsers:
+    type: object
+    properties:
+      online:
+        type: array
+        items:
+          $ref: '#/definitions/User'
+      offline:
+        type: array
+        items:
+          $ref: '#/definitions/ConnectionUser'
+  ViewUnits:
+    type: object
+    properties:
+      kernelMonetary:
+        $ref: '#/definitions/MonetaryCurrency'
+      monetary:
+        $ref: '#/definitions/MonetaryCurrency'
+      listUnit:
+        $ref: '#/definitions/ListUnit'
+  NewUser:
+    type: object
+    properties:
+      username:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      confirmpassword:
+        type: string
+  Connection:
+    type: object
+    properties:
+      ID_USER:
+        type: number
+      DATE_CONNECTION:
+        type: string
+      DATE_DISCONNECTION:
+        type: string
+      TYPE_DISCONNECTION:
+        type: string
+      USERNAM:
+        type: string
+      PERIOD:
+        type: string
+  ConnectionUser:
+    type: object
+    properties:
+      ID_USER:
+        type: number
+      DATE_CONNECTION:
+        type: string
+      DATE_DISCONNECTION:
+        type: string
+      TYPE_DISCONNECTION:
+        type: string
+      USERNAM:
+        type: string
+  ListUnit:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: integer
+      SYMBOL:
+        type: string
+      COEFF_A:
+        type: number
+      COEFF_B:
+        type: number
+      symbolSelect:
+        $ref: '#/definitions/Units'
+  StartCalcul:
+    type: object
+    properties:
+      idStudy:
+        type: integer
+      idStudyEquipment:
+        type: integer
+      epsilonTemp:
+        type: number
+      epsilonEnth:
+        type: number
+      nbOptimIter:
+        type: number
+      timeStep:
+        type: number
+      precision:
+        type: number
+      scheckStorage:
+        type: number
+      storagestep:
+        type: number
+      hRadioOn:
+        type: number
+      hRadioOff:
+        type: number
+      maxIter:
+        type: number
+      relaxCoef:
+        type: number
+      vRadioOn:
+        type: number
+      vRadioOff:
+        type: number
+      tempPtSurf:
+        type: number
+      tempPtIn:
+        type: number
+      tempPtBot:
+        type: number
+      tempPtAvg:
+        type: number
+      precisionlogstep:
+        type: number
+      select1:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select2:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select3:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select4:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select5:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select6:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select7:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select8:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select9:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+  ViewBrainOptim:
+    type: object
+    properties:
+      idStudy:
+        type: integer
+      idStudyEquipment:
+        type: integer
+      BRAIN_OPTIM:
+        type: integer
+      EQUIP_STANDARD:
+        type: integer
+      BRAIN_OPTIM_TSFIXED:
+        type: integer
+      BRAIN_OPTIM_TRFIXED:
+        type: integer
+      BRAIN_OPTIM_DHPFIXED:
+        type: integer
+      BRAIN_OPTIM_TOPFIXED:
+        type: integer
+      BRAIN_OPTIM_COSTFIXED:
+        type: integer
+  ViewProgressBar:
+    type: object
+    properties:
+      studyEquipments:
+        type: array
+        items:
+          $ref: '#/definitions/ViewStudyEquipment'
+  MeshParamDef:
+    type: object
+    properties:
+      ID_USER:
+        type: integer
+      MESH_1_SIZE:
+        type: number
+      MESH_2_SIZE:
+        type: number
+      MESH_3_SIZE:
+        type: number
+      MESH_RATIO:
+        type: number
+  MeshParamDefSave:
+    type: object
+    properties:
+      dim1:
+        type: number
+      dim2:
+        type: number
+      dim3:
+        type: number
+  TempRecordPtsDef:
+    type: object
+    properties:
+      ID_TEMP_RECORD_PTS_DEF:
+        type: integer
+      ID_USER:
+        type: integer
+      AXIS1_PT_TOP_SURF_DEF:
+        type: number
+      AXIS2_PT_TOP_SURF_DEF:
+        type: number
+      AXIS3_PT_TOP_SURF_DEF:
+        type: number
+      AXIS1_PT_INT_PT_DEF:
+        type: number
+      AXIS2_PT_INT_PT_DEF:
+        type: number
+      AXIS3_PT_INT_PT_DEF:
+        type: number
+      AXIS1_PT_BOT_SURF_DEF:
+        type: number
+      AXIS2_PT_BOT_SURF_DEF:
+        type: number
+      AXIS3_PT_BOT_SURF_DEF:
+        type: number
+      AXIS2_AX_1_DEF:
+        type: number
+      AXIS3_AX_1_DEF:
+        type: number
+      AXIS1_AX_2_DEF:
+        type: number
+      AXIS3_AX_2_DEF:
+        type: number
+      AXIS1_AX_3_DEF:
+        type: number
+      AXIS2_AX_3_DEF:
+        type: number
+      AXIS1_PL_2_3_DEF:
+        type: number
+      AXIS2_PL_1_3_DEF:
+        type: number
+      AXIS3_PL_1_2_DEF:
+        type: number
+      NB_STEPS_DEF:
+        type: number
+      CONTOUR2D_TEMP_MIN_DEF:
+        type: number
+      CONTOUR2D_TEMP_MAX_DEF:
+        type: number
+  TempRecordPtsDefSave:
+    type: object
+    properties:
+      axis1TopSurf:
+        type: number
+      axis2TopSurf:
+        type: number
+      axis3TopSurf:
+        type: number
+      axis1IntPt:
+        type: number
+      axis2IntPt:
+        type: number
+      axis3IntPt:
+        type: number
+      axis1BotSurf:
+        type: number
+      axis2BotSurf:
+        type: number
+      axis3BotSurf:
+        type: number
+      axis2PL13:
+        type: number
+      axis3PL12:
+        type: number
+      axis1PL23:
+        type: number
+      axis2Axe1:
+        type: number
+      axis3Axe1:
+        type: number
+      axis1Axe2:
+        type: number
+      axis3Axe2:
+        type: number
+      axis1Axe3:
+        type: number
+      axis2Axe3:
+        type: number
+  CalculationParametersDef:
+    type: object
+    properties:
+      ID_CALC_PARAMSDEF:
+        type: integer
+      ID_USER:
+        type: integer
+      HORIZ_SCAN_DEF:
+        type: integer
+      VERT_SCAN_DEF:
+        type: integer
+      MAX_IT_NB_DEF:
+        type: number
+      TIME_STEPS_NB_DEF:
+        type: number
+      RELAX_COEFF_DEF:
+        type: number
+      TIME_STEP_DEF:
+        type: number
+      STORAGE_STEP_DEF:
+        type: number
+      PRECISION_LOG_STEP_DEF:
+        type: number
+      STOP_TOP_SURF_DEF:
+        type: number
+      STOP_INT_DEF:
+        type: number
+      STOP_BOTTOM_SURF_DEF:
+        type: number
+      STOP_AVG_DEF:
+        type: number
+      STUDY_ALPHA_TOP_FIXED_DEF:
+        type: number
+      STUDY_ALPHA_TOP_DEF:
+        type: number
+      STUDY_ALPHA_BOTTOM_FIXED_DEF:
+        type: number
+      STUDY_ALPHA_BOTTOM_DEF:
+        type: number
+      STUDY_ALPHA_LEFT_FIXED_DEF:
+        type: number
+      STUDY_ALPHA_LEFT_DEF:
+        type: number
+      STUDY_ALPHA_RIGHT_FIXED_DEF:
+        type: number
+      STUDY_ALPHA_RIGHT_DEF:
+        type: number
+      STUDY_ALPHA_FRONT_FIXED_DEF:
+        type: number
+      STUDY_ALPHA_FRONT_DEF:
+        type: number
+      STUDY_ALPHA_REAR_FIXED_DEF:
+        type: number
+      STUDY_ALPHA_REAR_DEF:
+        type: number
+      PRECISION_REQUEST_DEF:
+        type: number
+  CalculationParametersDefSave:
+    type: object
+    properties:
+      ishorizScanDef:
+        type: number
+      isVertScanDef:
+        type: number
+      maxIter:
+        type: number
+      relaxCoef:
+        type: number
+      precision:
+        type: number
+      stopTopSurfDef:
+        type: number
+      stopIntDef:
+        type: number
+      stopBottomSurfDef:
+        type: number
+      stopAvgDef:
+        type: number
+      isStudyAlphaTopFixedDef:
+        type: number
+      isStudyAlphaBottomFixedDef:
+        type: number
+      isStudyAlphaLeftFixedDef:
+        type: number
+      isStudyAlphaRightFixedDef:
+        type: number
+      isStudyAlphaFrontFixedDef:
+        type: number
+      isStudyAlphaRearFixedDef:
+        type: number
+      studyAlphaTopDef:
+        type: number
+      studyAlphaBottomDef:
+        type: number
+      studyAlphaLeftDef:
+        type: number
+      studyAlphaRightDef:
+        type: number
+      studyAlphaFrontDef:
+        type: number
+      studyAlphaRearDef:
+        type: number
+      storageStepDef:
+        type: number
+      precisionLogStepDef:
+        type: number
+      timeStepDef:
+        type: number
+  Translation:
+    type: object
+    properties:
+      CODE_LANGUE:
+        type: integer
+      ID_TRANSLATION:
+        type: integer
+      TRANS_TYPE:
+        type: integer
+      LABEL:
+        type: string
+  CheckControlView:
+    type: object
+    properties:
+      definition:
+        type: boolean
+      production:
+        type: boolean
+      mesh:
+        type: boolean
+      packing:
+        type: boolean
+      equipment:
+        type: boolean
+      pipeenable:
+        type: boolean
+      pipeline:
+        type: boolean
+  CheckControl:
+    type: object
+    properties:
+      checkcontrol:
+        type: boolean
+  OptimumCalculator:
+    type: object
+    properties:
+      sdisableFields:
+        type: number
+      sdisableCalculate:
+        type: number
+      checkOptim:
+        type: number
+      sdisableOptim:
+        type: number
+      sdisableNbOptim:
+        type: number
+      epsilonTemp:
+        type: number
+      epsilonEnth:
+        type: number
+      nbOptimIter:
+        type: number
+      sdisableTimeStep:
+        type: number
+      sdisablePrecision:
+        type: number
+      sdisableStorage:
+        type: number
+      timeStep:
+        type: number
+      precision:
+        type: number
+      scheckStorage:
+        type: number
+      storagestep:
+        type: number
+      hRadioOn:
+        type: number
+      hRadioOff:
+        type: number
+      maxIter:
+        type: number
+      relaxCoef:
+        type: number
+      vRadioOn:
+        type: number
+      vRadioOff:
+        type: number
+      tempPtSurf:
+        type: number
+      tempPtIn:
+        type: number
+      tempPtBot:
+        type: number
+      tempPtAvg:
+        type: number
+      isBrainCalculator:
+        type: number
+      select1:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select2:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select3:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select4:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select5:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select6:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select7:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select8:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select9:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+  ViewSelect:
+    type: object
+    properties:
+      selected:
+        type: number
+      value:
+        type: number
+      label:
+        type: number
+  ViewDwellingTimes:
+    type: object
+    properties:
+      name:
+        type: number
+      value:
+        type: number
+  ViewTemperatures:
+    type: object
+    properties:
+      name:
+        type: number
+      value:
+        type: number
+  StartCalculate:
+    type: object
+    properties:
+      idStudy:
+        type: integer
+      idStudyEquipment:
+        type: integer
+      checkOptim:
+        type: number
+      epsilonTemp:
+        type: number
+      epsilonEnth:
+        type: number
+      nbOptimIter:
+        type: number
+      sdisableOptim:
+        type: integer
+      timeStep:
+        type: number
+      precision:
+        type: number
+      scheckStorage:
+        type: number
+      storagestep:
+        type: number
+      hRadioOn:
+        type: number
+      hRadioOff:
+        type: number
+      maxIter:
+        type: number
+      relaxCoef:
+        type: number
+      vRadioOn:
+        type: number
+      vRadioOff:
+        type: number
+      tempPtSurf:
+        type: number
+      tempPtIn:
+        type: number
+      tempPtBot:
+        type: number
+      tempPtAvg:
+        type: number
+      select1:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select2:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select3:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select4:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select5:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select6:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select7:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select8:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select9:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+  BrainCalculator:
+    type: object
+    properties:
+      sdisableFields:
+        type: number
+      sdisableCalculate:
+        type: number
+      checkOptim:
+        type: number
+      sdisableOptim:
+        type: number
+      sdisableNbOptim:
+        type: number
+      epsilonTemp:
+        type: number
+      epsilonEnth:
+        type: number
+      nbOptimIter:
+        type: number
+      sdisableTimeStep:
+        type: number
+      sdisablePrecision:
+        type: number
+      sdisableStorage:
+        type: number
+      timeStep:
+        type: number
+      precision:
+        type: number
+      precisionlogstep:
+        type: number
+      scheckStorage:
+        type: number
+      storagestep:
+        type: number
+      hRadioOn:
+        type: number
+      hRadioOff:
+        type: number
+      maxIter:
+        type: number
+      relaxCoef:
+        type: number
+      vRadioOn:
+        type: number
+      vRadioOff:
+        type: number
+      tempPtSurf:
+        type: number
+      tempPtIn:
+        type: number
+      tempPtBot:
+        type: number
+      tempPtAvg:
+        type: number
+      dwellingTimes:
+        type: array
+        items:
+          $ref: '#/definitions/ViewDwellingTimes'
+      temperatures:
+        type: array
+        items:
+          $ref: '#/definitions/ViewTemperatures'
+      toc:
+        type: number
+      select1:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select2:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select3:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select4:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select5:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select6:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select7:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select8:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select9:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      sdisableTOC:
+        type: number
+      typeCalculate:
+        type: integer
+  StartBrainCalculate:
+    type: object
+    properties:
+      idStudy:
+        type: integer
+      idStudyEquipment:
+        type: integer
+      checkOptim:
+        type: boolean
+      dwellingTimes:
+        type: array
+        items:
+          $ref: '#/definitions/ViewDwellingTimes'
+      temperatures:
+        type: array
+        items:
+          $ref: '#/definitions/ViewTemperatures'
+      toc:
+        type: number
+      typeCalculate:
+        type: integer
+      epsilonTemp:
+        type: number
+      epsilonEnth:
+        type: number
+      nbOptimIter:
+        type: number
+      timeStep:
+        type: number
+      precision:
+        type: number
+      scheckStorage:
+        type: number
+      storagestep:
+        type: number
+      hRadioOn:
+        type: number
+      hRadioOff:
+        type: number
+      maxIter:
+        type: number
+      relaxCoef:
+        type: number
+      vRadioOn:
+        type: number
+      vRadioOff:
+        type: number
+      tempPtSurf:
+        type: number
+      tempPtIn:
+        type: number
+      tempPtBot:
+        type: number
+      tempPtAvg:
+        type: number
+      select1:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select2:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select3:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select4:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select5:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select6:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select7:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select8:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+      select9:
+        type: array
+        items:
+          $ref: '#/definitions/ViewSelect'
+  UnitDataEquipment:
+    type: object
+    properties:
+      Price:
+        type: number
+      IntervalWidth:
+        type: number
+      IntervalLength:
+        type: number
+      MonetarySymbol:
+        type: string
+      DimensionSymbol:
+        type: string
+  Error:
+    type: object
+    properties:
+      code:
+        type: number
+      message:
+        type: string
+  ViewLineList:
+    type: object
+    properties:
+      dataResultExist:
+        $ref: '#/definitions/VariabelLine'
+      dataResult:
+        $ref: '#/definitions/VariabelLine'
+  VariabelLine:
+    type: object
+    properties:
+      elbows:
+        type: string
+      elbowsnumber:
+        type: number
+      gastemp:
+        type: number
+      height:
+        type: number
+      insulatedline:
+        type: string
+      insulatedlineval:
+        type: string
+      insulllenght:
+        type: number
+      insulvallenght:
+        type: number
+      non_insulated_line:
+        type: string
+      non_insulated_valves:
+        type: string
+      noninsulatevallenght:
+        type: number
+      noninsullenght:
+        type: number
+      pressuer:
+        type: number
+      tee:
+        type: string
+      teenumber:
+        type: number
+      diameter:
+        type: number
+      insulationType:
+        type: integer
+      storageTank:
+        type: string
+  Symbol:
+    type: object
+    properties:
+      productFlowSymbol:
+        type: string
+      massSymbol:
+        type: string
+      temperatureSymbol:
+        type: string
+      percentSymbol:
+        type: string
+      timeSymbol:
+        type: string
+      perUnitOfMassSymbol:
+        type: string
+      enthalpySymbol:
+        type: string
+      monetarySymbol:
+        type: string
+      equipDimensionSymbol:
+        type: string
+      convectionSpeedSymbol:
+        type: string
+      prodchartDimensionSymbol:
+        type: string
+      consumSymbol:
+        type: string
+      consumMaintienSymbol:
+        type: string
+      mefSymbol:
+        type: string
+  OptimumResultAna:
+    type: object
+    properties:
+      prodFlowRate:
+        type: number
+      prodElmtRealweight:
+        type: number
+      avgTInitial:
+        type: number
+  HeadBalanceResult:
+    type: object
+    properties:
+      id:
+        type: integer
+      specificSize:
+        type: string
+      equipName:
+        type: string
+      runBrainPopup:
+        type: boolean
+      calculWarning:
+        type: number
+      calculate:
+        type: string
+      tr:
+        type: number
+      ts:
+        type: number
+      vc:
+        type: number
+      vep:
+        type: number
+      tfp:
+        type: number
+      dhp:
+        type: number
+      conso:
+        type: string
+      conso_warning:
+        type: string
+      toc:
+        type: string
+      precision:
+        type: number
+  HeadBalanceMaxResult:
+    type: object
+    properties:
+      id:
+        type: integer
+      specificSize:
+        type: string
+      equipName:
+        type: string
+      calculWarning:
+        type: number
+      tr:
+        type: number
+      ts:
+        type: number
+      vc:
+        type: number
+      vep:
+        type: number
+      tfp:
+        type: number
+      dhp:
+        type: number
+      conso:
+        type: string
+      conso_warning:
+        type: string
+      toc:
+        type: string
+      precision:
+        type: number
+  EstimationHeadBalanceResult:
+    type: object
+    properties:
+      id:
+        type: integer
+      specificSize:
+        type: string
+      equipName:
+        type: string
+      tr:
+        type: number
+      ts:
+        type: number
+      vc:
+        type: number
+      vep:
+        type: number
+      tfp:
+        type: number
+      dhp:
+        type: number
+      conso:
+        type: number
+      toc:
+        type: string
+      tocMax:
+        type: string
+      precision:
+        type: number
+  ConsumptionResult:
+    type: object
+    properties:
+      id:
+        type: integer
+      equipName:
+        type: string
+      tc:
+        type: number
+      kgProduct:
+        type: number
+      product:
+        type: number
+      day:
+        type: integer
+      week:
+        type: integer
+      hour:
+        type: number
+      month:
+        type: integer
+      year:
+        type: integer
+      eqptPerm:
+        type: number
+      eqptCold:
+        type: number
+      lineCold:
+        type: number
+      linePerm:
+        type: number
+      tank:
+        type: number
+      percentProduct:
+        type: integer
+      percentEquipmentPerm:
+        type: integer
+      percentEquipmentDown:
+        type: integer
+      percentLine:
+        type: integer
+  EconomicResult:
+    type: object
+    properties:
+      id:
+        type: integer
+      equipName:
+        type: string
+      tc:
+        type: number
+      kgProduct:
+        type: number
+      product:
+        type: number
+      day:
+        type: integer
+      week:
+        type: integer
+      month:
+        type: integer
+      year:
+        type: integer
+      eqptPerm:
+        type: number
+      eqptCold:
+        type: number
+      lineCold:
+        type: number
+      linePerm:
+        type: number
+      tank:
+        type: number
+  EquipSizing:
+    type: object
+    properties:
+      idStudyEquipment:
+        type: integer
+      equipName:
+        type: string
+      minWidth:
+        type: number
+      maxWidth:
+        type: number
+      minLength:
+        type: number
+      maxLength:
+        type: number
+      minSurf:
+        type: number
+      maxSurf:
+        type: number
+  StudEqpPrm:
+    type: object
+    properties:
+      ID_STUD_EQP_PRM:
+        type: integer
+      ID_STUDY_EQUIPMENTS:
+        type: integer
+      VALUE_TYPE:
+        type: number
+      VALUE:
+        type: number
+  DimaResults:
+    type: object
+    properties:
+      ID_DIMA_RESULTS:
+        type: integer
+      ID_STUDY_EQUIPMENTS:
+        type: integer
+      SETPOINT:
+        type: number
+      DIMA_STATUS:
+        type: integer
+      DIMA_TS:
+        type: number
+      DIMA_TFP:
+        type: number
+      DIMA_VEP:
+        type: number
+      DIMA_VC:
+        type: number
+      DIMA_TYPE:
+        type: integer
+      DIMA_PRECIS:
+        type: number
+      CRYOCONSPROD:
+        type: number
+      HOURLYOUTPUTMAX:
+        type: number
+      CONSUM:
+        type: number
+      USERATE:
+        type: number
+      CONSUMMAX:
+        type: number
+      USERATEMAX:
+        type: number
+  ViewEquipTr:
+    type: object
+    properties:
+      equipName:
+        type: string
+      dimaResult:
+        $ref: '#/definitions/DimaResults'
+  ViewTrCalculate:
+    type: object
+    properties:
+      idStudyEquipment:
+        type: integer
+      equipName:
+        type: string
+      trPrm:
+        $ref: '#/definitions/StudEqpPrm'
+      tsPrm:
+        $ref: '#/definitions/StudEqpPrm'
+      vcPrm:
+        $ref: '#/definitions/StudEqpPrm'
+      tePrm:
+        $ref: '#/definitions/StudEqpPrm'
+      ldSetpointmax:
+        type: integer
+      trMin:
+        type: number
+      trMax:
+        type: number
+      tsMin:
+        type: number
+      tsMax:
+        type: number
+      disabled:
+        type: string
+  ViewPackingLayer:
+    type: object
+    properties:
+      packing:
+        $ref: '#/definitions/Packing'
+      packingLayers:
+        type: array
+        items:
+          $ref: '#/definitions/PackingLayer'
+  SavePackingLayer:
+    type: object
+    properties:
+      packing:
+        $ref: '#/definitions/Packing'
+      packingLayers:
+        type: array
+        items:
+          properties:
+            ID_PACKING_ELMT:
+              type: integer
+            PACKING_SIDE_NUMBER:
+              type: integer
+            PACKING_LAYER_ORDER:
+              type: integer
+            THICKNESS:
+              type: number
+  saveTempRecordPts:
+    type: object
+    properties:
+      ID_STUDY:
+        type: integer
+      ID_STUDY_EQUIPMENTS:
+        type: integer
+      AXE:
+        type: integer
+      NB_STEPS:
+        type: number
+  MeshGeneration:
+    type: object
+    properties:
+      ID_MESH_GENERATION:
+        type: integer
+      ID_PROD:
+        type: integer
+      MESH_1_FIXED:
+        type: number
+      MESH_2_FIXED:
+        type: number
+      MESH_3_FIXED:
+        type: number
+      MESH_1_MODE:
+        type: integer
+      MESH_2_MODE:
+        type: integer
+      MESH_3_MODE:
+        type: integer
+      MESH_1_NB:
+        type: integer
+      MESH_2_NB:
+        type: integer
+      MESH_3_NB:
+        type: integer
+      MESH_1_SIZE:
+        type: number
+      MESH_2_SIZE:
+        type: number
+      MESH_3_SIZE:
+        type: number
+      MESH_1_INT:
+        type: number
+      MESH_2_INT:
+        type: number
+      MESH_3_INT:
+        type: number
+      MESH_1_RATIO:
+        type: number
+      MESH_2_RATIO:
+        type: number
+      MESH_3_RATIO:
+        type: number
+      BEST_1_NB:
+        type: integer
+      BEST_2_NB:
+        type: integer
+      BEST_3_NB:
+        type: integer
+  MeshPosition:
+    type: object
+    properties:
+      ID_MESH_POSITION:
+        type: integer
+      ID_PRODUCT_ELMT:
+        type: integer
+      MESH_AXIS:
+        type: number
+      MESH_ORDER:
+        type: integer
+      MESH_AXIS_POS:
+        type: number
+      ID_STUDY:
+        type: integer
+  TempRecordPts:
+    type: object
+    properties:
+      ID_TEMP_RECORD_PTS:
+        type: integer
+      ID_STUDY:
+        type: integer
+      AXIS1_PT_TOP_SURF:
+        type: number
+      AXIS2_PT_TOP_SURF:
+        type: number
+      AXIS3_PT_TOP_SURF:
+        type: number
+      AXIS1_PT_INT_PT:
+        type: number
+      AXIS2_PT_INT_PT:
+        type: number
+      AXIS3_PT_INT_PT:
+        type: number
+      AXIS1_PT_BOT_SURF:
+        type: number
+      AXIS2_PT_BOT_SURF:
+        type: number
+      AXIS3_PT_BOT_SURF:
+        type: number
+      AXIS2_AX_1:
+        type: number
+      AXIS3_AX_1:
+        type: number
+      AXIS1_AX_2:
+        type: number
+      AXIS3_AX_2:
+        type: number
+      AXIS1_AX_3:
+        type: number
+      AXIS2_AX_3:
+        type: number
+      AXIS1_PL_2_3:
+        type: number
+      AXIS2_PL_1_3:
+        type: number
+      AXIS3_PL_1_2:
+        type: number
+      NB_STEPS:
+        type: integer
+      CONTOUR2D_TEMP_MIN:
+        type: number
+      CONTOUR2D_TEMP_MAX:
+        type: number
+  RecordPosition:
+    type: object
+    properties:
+      AVERAGE_ENTH_VAR:
+        type: number
+      AVERAGE_TEMP:
+        type: number
+      ENTHALPY_VAR:
+        type: number
+      ID_REC_POS:
+        type: integer
+      ID_STUDY_EQUIPMENTS:
+        type: integer
+      RECORD_BUFFER:
+        type: integer
+      RECORD_STATE:
+        type: integer
+      RECORD_TIME:
+        type: number
+  SizingResultOptimum:
+    type: object
+    properties:
+      ts:
+        type: number
+      tr:
+        type: number
+      vc:
+        type: number
+      dhp:
+        type: number
+      conso:
+        type: string
+      conso_warning:
+        type: string
+      toc:
+        type: number
+      tsMax:
+        type: number
+      trMax:
+        type: number
+      vcMax:
+        type: number
+      dhpMax:
+        type: number
+      consoMax:
+        type: string
+      consomax_warning:
+        type: string
+      tocMax:
+        type: number
+  ViewSizingEstimationResult:
+    type: object
+    properties:
+      result:
+        $ref: '#/definitions/SizingResultEStimation'
+      dataGraphChart:
+        type: object
+        properties:
+          id:
+            type: integer
+          equipName:
+            type: string
+          data:
+            $ref: '#/definitions/chartEstimationData'
+  SizingResultEStimation:
+    type: object
+    properties:
+      id:
+        type: integer
+      equipName:
+        type: string
+      viewEquip:
+        type: boolean
+      tr:
+        type: string
+      conso:
+        type: string
+      toc:
+        type: string
+      dhpMax:
+        type: string
+      consoMax:
+        type: string
+      tocMax:
+        type: string
+  ViewSizingResultOptimum:
+    type: object
+    properties:
+      result:
+        $ref: '#/definitions/SizingResultOptimum'
+      selectedEquipment:
+        $ref: '#/definitions/SizingOptimumData'
+      availableEquipment:
+        $ref: '#/definitions/SizingOptimumData'
+      dataGrapChart:
+        $ref: '#/definitions/SizingOptimumData'
+  ViewTemperatureProfile:
+    type: object
+    properties:
+      minScaleTemp:
+        type: number
+      maxScaleTemp:
+        type: number
+      minScaleConv:
+        type: number
+      maxScaleConv:
+        type: number
+      tempChartData:
+        $ref: '#/definitions/TemperatureProfileData'
+      convChartData:
+        $ref: '#/definitions/TemperatureProfileData'
+  ViewLocation:
+    type: object
+  ViewLocationMeshAxis:
+    type: object
+    properties:
+      x:
+        type: array
+        items:
+          $ref: '#/definitions/LocationMeshAxisResult'
+      'y':
+        type: array
+        items:
+          $ref: '#/definitions/LocationMeshAxisResult'
+      z:
+        type: array
+        items:
+          $ref: '#/definitions/LocationMeshAxisResult'
+  ViewHeatExchange:
+    type: object
+    properties:
+      result:
+        $ref: '#/definitions/Coordinates'
+      curve:
+        $ref: '#/definitions/Coordinates'
+  ViewTimeBased:
+    type: object
+    properties:
+      label:
+        $ref: '#/definitions/TimeBasedLabel'
+      result:
+        $ref: '#/definitions/TimeBasedResult'
+      curve:
+        $ref: '#/definitions/TimeBasedCurve'
+  ViewProductSection:
+    type: object
+    properties:
+      axeTemp:
+        type: array
+        items:
+          type: number
+      dataChart:
+        type: array
+        items:
+          $ref: '#/definitions/Coordinates'
+      resultLabel:
+        type: array
+        items:
+          type: number
+      result:
+        type: object
+        properties:
+          recAxis:
+            type: array
+            items:
+              type: number
+          mesAxis:
+            type: array
+            items:
+              type: number
+          resultValue:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+  ViewProductchart2D:
+    type: object
+    properties:
+      chartTempInterval:
+        type: array
+        items:
+          type: number
+      valueRecAxis:
+        $ref: '#/definitions/Coordinates'
+      lfDwellingTime:
+        type: number
+      lftimeInterval:
+        type: number
+      axisName:
+        type: array
+        items:
+          type: integer
+  TemperatureProfileData:
+    type: object
+    properties:
+      top:
+        $ref: '#/definitions/Coordinates'
+      bottom:
+        $ref: '#/definitions/Coordinates'
+      left:
+        $ref: '#/definitions/Coordinates'
+      right:
+        $ref: '#/definitions/Coordinates'
+      front:
+        $ref: '#/definitions/Coordinates'
+      rear:
+        $ref: '#/definitions/Coordinates'
+  TimeBasedCurve:
+    type: object
+    properties:
+      top:
+        $ref: '#/definitions/Coordinates'
+      int:
+        $ref: '#/definitions/Coordinates'
+      bot:
+        $ref: '#/definitions/Coordinates'
+      average:
+        $ref: '#/definitions/Coordinates'
+  Coordinates:
+    type: object
+    properties:
+      x:
+        type: number
+      'y':
+        type: number
+      z:
+        type: number
+  chartEstimationData:
+    type: object
+    properties:
+      dhp:
+        type: number
+      conso:
+        type: number
+      dhpMax:
+        type: number
+      consoMax:
+        type: number
+  SizingOptimumData:
+    type: object
+    properties:
+      id:
+        type: integer
+      equipName:
+        type: string
+      dhp:
+        type: number
+      conso:
+        type: number
+      dhpMax:
+        type: number
+      consoMax:
+        type: number
+  TimeBasedLabel:
+    type: object
+    properties:
+      top:
+        type: string
+      int:
+        type: string
+      bot:
+        type: string
+  TimeBasedResult:
+    type: object
+    properties:
+      points:
+        type: number
+      top:
+        type: number
+      int:
+        type: number
+      bot:
+        type: number
+      average:
+        type: number
+  LocationMeshAxisResult:
+    type: object
+    properties:
+      name:
+        type: number
+      value:
+        type: number
+  MeshPoints:
+    type: object
+  ViewComponent:
+    type: object
+    properties:
+      productFamily:
+        type: array
+        items:
+          $ref: '#/definitions/ViewFamily'
+      PRODUCT_TYPE:
+        type: integer
+      subFamily:
+        type: array
+        items:
+          $ref: '#/definitions/ViewFamily'
+      SUB_TYPE:
+        type: integer
+      productNature:
+        type: array
+        items:
+          $ref: '#/definitions/ViewFamily'
+      NATURE_TYPE:
+        type: integer
+      Conductivity:
+        type: array
+        items:
+          $ref: '#/definitions/ViewFamily'
+      CONDUCT_TYPE:
+        type: integer
+      FatType:
+        type: array
+        items:
+          $ref: '#/definitions/ViewFamily'
+      Temperatures:
+        type: array
+        items:
+          $ref: '#/definitions/ViewTemperature'
+      FATTYPE:
+        type: integer
+      COMP_NAME:
+        type: string
+      COMP_NAME_NEW:
+        type: string
+      AIR:
+        type: number
+      BLS_CODE:
+        type: string
+      CLASS_TYPE:
+        type: number
+      COMP_COMMENT:
+        type: string
+      COMP_DATE:
+        type: string
+      COMP_GEN_STATUS:
+        type: integer
+      COMP_IMP_ID_STUDY:
+        type: integer
+      COMP_NATURE:
+        type: integer
+      COMP_RELEASE:
+        type: integer
+      COMP_VERSION:
+        type: number
+      COMP_VERSION_NEW:
+        type: number
+      COND_DENS_MODE:
+        type: number
+      DENSITY:
+        type: number
+      FAT_TYPE:
+        type: number
+      FREEZE_TEMP:
+        type: number
+      GLUCID:
+        type: number
+      ID_COMP:
+        type: integer
+      ID_USER:
+        type: integer
+      LIPID:
+        type: number
+      NON_FROZEN_WATER:
+        type: number
+      OPEN_BY_OWNER:
+        type: integer
+      PROTID:
+        type: number
+      SALT:
+        type: number
+      SPECIFIC_HEAT:
+        type: number
+      SUB_FAMILY:
+        type: integer
+      WATER:
+        type: number
+      release:
+        type: integer
+      TYPE_COMP:
+        type: integer
+  ViewFamily:
+    type: object
+    properties:
+      LABEL:
+        type: string
+      ID_TRANSLATION:
+        type: integer
+  ViewTemperature:
+    type: object
+    properties:
+      temperature:
+        type: number
+  VComponent:
+    type: object
+    properties:
+      AIR:
+        type: number
+      BLS_CODE:
+        type: string
+      CLASS_TYPE:
+        type: number
+      COMP_COMMENT:
+        type: string
+      COMP_DATE:
+        type: string
+      COMP_GEN_STATUS:
+        type: integer
+      COMP_IMP_ID_STUDY:
+        type: integer
+      COMP_NATURE:
+        type: integer
+      COMP_RELEASE:
+        type: integer
+      COMP_VERSION:
+        type: number
+      COND_DENS_MODE:
+        type: number
+      DENSITY:
+        type: number
+      FAT_TYPE:
+        type: number
+      FREEZE_TEMP:
+        type: number
+      GLUCID:
+        type: number
+      ID_COMP:
+        type: integer
+      ID_USER:
+        type: integer
+      LIPID:
+        type: number
+      NON_FROZEN_WATER:
+        type: number
+      OPEN_BY_OWNER:
+        type: integer
+      PROTID:
+        type: number
+      SALT:
+        type: number
+      SPECIFIC_HEAT:
+        type: number
+      SUB_FAMILY:
+        type: integer
+      WATER:
+        type: number
+      LABEL:
+        type: string
+  MyComponent:
+    type: object
+    properties:
+      mine:
+        type: array
+        items:
+          $ref: '#/definitions/VComponent'
+      others:
+        type: array
+        items:
+          $ref: '#/definitions/VComponent'
+  Compenth:
+    type: object
+    properties:
+      ID_COMPENTH:
+        type: integer
+      ID_COMP:
+        type: integer
+      COMPTEMP:
+        type: number
+      COMPENTH:
+        type: number
+      COMPCOND:
+        type: number
+      COMPDENS:
+        type: number
+  PackingElmt:
+    type: object
+    properties:
+      ID_PACKING_ELMT:
+        type: integer
+      ID_USER:
+        type: integer
+      PACKING_VERSION:
+        type: number
+      PACKING_RELEASE:
+        type: integer
+      PACKING_DATE:
+        type: string
+      PACKING_COMMENT:
+        type: string
+      PACKINGCOND:
+        type: number
+      PACK_IMP_ID_STUDY:
+        type: integer
+      OPEN_BY_OWNER:
+        type: integer
+      CODE_LANGUE:
+        type: integer
+      ID_TRANSLATION:
+        type: integer
+      LABEL:
+        type: string
+      TRANS_TYPE:
+        type: integer
+  ViewPackingElmt:
+    type: object
+    properties:
+      mine:
+        type: array
+        items:
+          $ref: '#/definitions/PackingElmt'
+      others:
+        type: array
+        items:
+          $ref: '#/definitions/PackingElmt'
+  NewPacking:
+    type: object
+    properties:
+      name:
+        type: string
+      version:
+        type: number
+      conductivity:
+        type: number
+      comment:
+        type: string
+      release:
+        type: integer
+  ComponentDB:
+    type: object
+    properties:
+      AIR:
+        type: number
+      BLS_CODE:
+        type: string
+      CLASS_TYPE:
+        type: number
+      COMP_COMMENT:
+        type: string
+      COMP_DATE:
+        type: string
+      COMP_GEN_STATUS:
+        type: integer
+      COMP_IMP_ID_STUDY:
+        type: integer
+      COMP_NATURE:
+        type: integer
+      COMP_RELEASE:
+        type: integer
+      COMP_VERSION:
+        type: number
+      COND_DENS_MODE:
+        type: number
+      DENSITY:
+        type: number
+      FAT_TYPE:
+        type: number
+      FREEZE_TEMP:
+        type: number
+      GLUCID:
+        type: number
+      ID_COMP:
+        type: integer
+      ID_USER:
+        type: integer
+      LIPID:
+        type: number
+      NON_FROZEN_WATER:
+        type: number
+      OPEN_BY_OWNER:
+        type: integer
+      PROTID:
+        type: number
+      SALT:
+        type: number
+      SPECIFIC_HEAT:
+        type: number
+      SUB_FAMILY:
+        type: integer
+      WATER:
+        type: number
+  ViewPipeLineElmt:
+    type: object
+    properties:
+      mine:
+        type: array
+        items:
+          $ref: '#/definitions/PipeLineElmt'
+      others:
+        type: array
+        items:
+          $ref: '#/definitions/PipeLineElmt'
+  PipeLineElmt:
+    type: object
+    properties:
+      ID_PIPELINE_ELMT:
+        type: integer
+      ID_USER:
+        type: integer
+      ID_COOLING_FAMILY:
+        type: integer
+      LINE_VERSION:
+        type: number
+      LINE_RELEASE:
+        type: integer
+      LINE_DATE:
+        type: string
+      LINE_COMMENT:
+        type: string
+      MANUFACTURER:
+        type: string
+      ELT_TYPE:
+        type: number
+      INSULATION_TYPE:
+        type: number
+      ELMT_PRICE:
+        type: number
+      ELT_SIZE:
+        type: number
+      ELT_LOSSES_1:
+        type: number
+      ELT_LOSSES_2:
+        type: number
+      ELT_IMP_ID_STUDY:
+        type: integer
+      OPEN_BY_OWNER:
+        type: integer
+      CODE_LANGUE:
+        type: integer
+      ID_TRANSLATION:
+        type: integer
+      TRANS_TYPE:
+        type: integer
+      LABEL:
+        type: string
+  RefEquipment:
+    type: object
+    properties:
+      ID_EQUIP:
+        type: integer
+      ID_EQUIPSERIES:
+        type: integer
+      ID_COOLING_FAMILY:
+        type: integer
+      ID_USER:
+        type: integer
+      ID_EQUIPGENERATION:
+        type: integer
+      EQUIP_NAME:
+        type: string
+      EQUIP_VERSION:
+        type: number
+      EQUIP_RELEASE:
+        type: integer
+      EQUIP_DATE:
+        type: string
+      EQUIP_COMMENT:
+        type: string
+      EQUIPPICT:
+        type: string
+      STD:
+        type: integer
+      EQP_LENGTH:
+        type: number
+      EQP_WIDTH:
+        type: number
+      EQP_HEIGHT:
+        type: number
+      MODUL_LENGTH:
+        type: number
+      NB_MAX_MODUL:
+        type: integer
+      NB_TR:
+        type: integer
+      NB_TS:
+        type: integer
+      NB_VC:
+        type: integer
+      BUYING_COST:
+        type: number
+      RENTAL_COST:
+        type: number
+      INSTALL_COST:
+        type: number
+      MAX_FLOW_RATE:
+        type: number
+      MAX_NOZZLES_BY_RAMP:
+        type: integer
+      MAX_RAMPS:
+        type: integer
+      NUMBER_OF_ZONES:
+        type: integer
+      TMP_REGUL_MIN:
+        type: number
+      CAPABILITIES:
+        type: integer
+      ITEM_TR:
+        type: integer
+      ITEM_TS:
+        type: integer
+      ITEM_VC:
+        type: integer
+      ITEM_PRECIS:
+        type: integer
+      ITEM_TIMESTEP:
+        type: integer
+      EQP_IMP_ID_STUDY:
+        type: integer
+      OPEN_BY_OWNER:
+        type: integer
+      SERIES_NAME:
+        type: string
+      BATCH_PROCESS:
+        type: boolean
+      TEMP_SETPOINT:
+        type: number
+      DWELLING_TIME:
+        type: number
+      capabilitiesCalc:
+        type: string
+      timeSymbol:
+        type: string
+      temperatureSymbol:
+        type: string
+      NEW_POS:
+        type: number
+  ViewEquipment:
+    type: object
+    properties:
+      mine:
+        type: array
+        items:
+          $ref: '#/definitions/RefEquipment'
+      others:
+        type: array
+        items:
+          $ref: '#/definitions/RefEquipment'
+  NewEquipment:
+    type: object
+    properties:
+      nameEquipment:
+        type: string
+      versionEquipment:
+        type: number
+      equipmentId1:
+        type: integer
+      equipmentId2:
+        type: integer
+      tempSetPoint:
+        type: number
+      dwellingTime:
+        type: number
+      newPos:
+        type: number
+      typeEquipment:
+        type: integer
+  ViewMesh:
+    type: object
+    properties:
+      meshGeneration:
+        $ref: '#/definitions/MeshGeneration'
+      elements:
+        type: array
+        items:
+          $ref: '#/definitions/ProductElmt'
+      elmtMeshPositions:
+        type: array
+        items:
+          $ref: '#/definitions/MeshPosition'
+      productIsoTemp:
+        type: number
+        required: false
+  ViewProduct:
+    type: object
+    properties:
+      product:
+        $ref: '#/definitions/Product'
+      elements:
+        type: array
+        items:
+          $ref: '#/definitions/ProductElmt'
+      specificDimension:
+        type: number
+  Component:
+    type: object
+    properties:
+      AIR:
+        type: number
+      BLS_CODE:
+        type: string
+      CLASS_TYPE:
+        type: number
+      COMP_COMMENT:
+        type: string
+      COMP_DATE:
+        type: string
+      COMP_GEN_STATUS:
+        type: integer
+      COMP_IMP_ID_STUDY:
+        type: integer
+      COMP_NATURE:
+        type: integer
+      COMP_RELEASE:
+        type: integer
+      COMP_VERSION:
+        type: number
+      COND_DENS_MODE:
+        type: number
+      DENSITY:
+        type: number
+      FAT_TYPE:
+        type: number
+      FREEZE_TEMP:
+        type: number
+      GLUCID:
+        type: number
+      ID_COMP:
+        type: integer
+      ID_USER:
+        type: integer
+      LIPID:
+        type: number
+      NON_FROZEN_WATER:
+        type: number
+      OPEN_BY_OWNER:
+        type: integer
+      PROTID:
+        type: number
+      SALT:
+        type: number
+      SPECIFIC_HEAT:
+        type: number
+      SUB_FAMILY:
+        type: integer
+      WATER:
+        type: number
+  Shape:
+    type: object
+    properties:
+      ID_SHAPE:
+        type: integer
+      SHAPECODE:
+        type: integer
+      SHAPEPICT:
+        type: string
+      SYM_1:
+        type: integer
+      SYM_2:
+        type: integer
+      SYM_3:
+        type: integer
+      AXISYM_1:
+        type: integer
+      AXISYM_2:
+        type: integer
+      AXISYM_3:
+        type: integer
+  PackingElement:
+    type: object
+    properties:
+      ID_PACKING_ELMT:
+        type: integer
+  PackingLayer:
+    type: object
+    properties:
+      ID_PACKING_LAYER:
+        type: integer
+      ID_PACKING:
+        type: integer
+      ID_PACKING_ELMT:
+        type: integer
+      THICKNESS:
+        type: number
+      PACKING_SIDE_NUMBER:
+        type: integer
+      PACKING_LAYER_ORDER:
+        type: integer
+  Packing:
+    type: object
+    properties:
+      ID_PACKING:
+        type: integer
+      ID_SHAPE:
+        type: integer
+      ID_STUDY:
+        type: integer
+      NOMEMBMAT:
+        type: string
+  Study:
+    type: object
+    properties:
+      CALCULATION_MODE:
+        type: integer
+      CALCULATION_STATUS:
+        type: integer
+      CHAINING_ADD_COMP_ENABLE:
+        type: boolean
+      CHAINING_CONTROLS:
+        type: boolean
+      CHAINING_NODE_DECIM_ENABLE:
+        type: boolean
+      COMMENT_TXT:
+        type: string
+      CUSTOMER:
+        type: string
+      HAS_CHILD:
+        type: integer
+      ID_HAVERAGE_RESULTS:
+        type: integer
+      ID_PACKING:
+        type: integer
+      ID_PRECALC_LDG_RATE_PRM:
+        type: integer
+      ID_PRICE:
+        type: integer
+      ID_PROD:
+        type: integer
+      ID_PRODUCTION:
+        type: integer
+      ID_REPORT:
+        type: integer
+      ID_STUDY:
+        type: integer
+      ID_STUDY_RESULTS:
+        type: integer
+      ID_TEMP_RECORD_PTS:
+        type: integer
+      ID_USER:
+        type: integer
+      OPEN_BY_OWNER:
+        type: integer
+      OPTION_CRYOPIPELINE:
+        type: boolean
+      OPTION_ECO:
+        type: boolean
+      OPTION_EXHAUSTPIPELINE:
+        type: boolean
+      PARENT_ID:
+        type: integer
+      PARENT_STUD_EQP_ID:
+        type: integer
+      STUDY_NAME:
+        type: string
+      TO_RECALCULATE:
+        type: integer
+      USERNAM:
+        type: string
+  Equipment:
+    type: object
+    properties:
+      ID_EQUIP:
+        type: integer
+      ID_EQUIPSERIES:
+        type: integer
+      ID_COOLING_FAMILY:
+        type: integer
+      ID_USER:
+        type: integer
+      ID_EQUIPGENERATION:
+        type: integer
+      EQUIP_NAME:
+        type: string
+      EQUIP_VERSION:
+        type: number
+      EQUIP_RELEASE:
+        type: integer
+      EQUIP_DATE:
+        type: string
+      EQUIP_COMMENT:
+        type: string
+      EQUIPPICT:
+        type: string
+      STD:
+        type: integer
+      EQP_LENGTH:
+        type: number
+      EQP_WIDTH:
+        type: number
+      EQP_HEIGHT:
+        type: number
+      MODUL_LENGTH:
+        type: number
+      NB_MAX_MODUL:
+        type: integer
+      NB_TR:
+        type: integer
+      NB_TS:
+        type: integer
+      NB_VC:
+        type: integer
+      BUYING_COST:
+        type: number
+      RENTAL_COST:
+        type: number
+      INSTALL_COST:
+        type: number
+      MAX_FLOW_RATE:
+        type: number
+      MAX_NOZZLES_BY_RAMP:
+        type: integer
+      MAX_RAMPS:
+        type: integer
+      NUMBER_OF_ZONES:
+        type: integer
+      TMP_REGUL_MIN:
+        type: number
+      CAPABILITIES:
+        type: integer
+      ITEM_TR:
+        type: integer
+      ITEM_TS:
+        type: integer
+      ITEM_VC:
+        type: integer
+      ITEM_PRECIS:
+        type: integer
+      ITEM_TIMESTEP:
+        type: integer
+      EQP_IMP_ID_STUDY:
+        type: integer
+      OPEN_BY_OWNER:
+        type: integer
+      SERIES_NAME:
+        type: string
+      BATCH_PROCESS:
+        type: boolean
+  Production:
+    type: object
+    properties:
+      ID_PRODUCTION:
+        type: integer
+      ID_STUDY:
+        type: integer
+      DAILY_PROD:
+        type: number
+      DAILY_STARTUP:
+        type: number
+      WEEKLY_PROD:
+        type: number
+      PROD_FLOW_RATE:
+        type: number
+      NB_PROD_WEEK_PER_YEAR:
+        type: number
+      AMBIENT_TEMP:
+        type: number
+      AMBIENT_HUM:
+        type: number
+      AVG_T_DESIRED:
+        type: number
+      AVG_T_INITIAL:
+        type: number
+      APPROX_DWELLING_TIME:
+        type: number
+  Product:
+    type: object
+    properties:
+      ID_PROD:
+        type: integer
+      ID_STUDY:
+        type: integer
+      ID_MESH_GENERATION:
+        type: integer
+      PRODNAME:
+        type: string
+      PROD_ISO:
+        type: integer
+      PROD_WEIGHT:
+        type: number
+      PROD_REALWEIGHT:
+        type: number
+      PROD_VOLUME:
+        type: number
+  ProductElmt:
+    type: object
+    properties:
+      ID_PRODUCT_ELMT:
+        type: integer
+      ID_PROD:
+        type: integer
+      ID_SHAPE:
+        type: integer
+      ID_COMP:
+        type: integer
+      PROD_ELMT_NAME:
+        type: string
+      SHAPE_PARAM1:
+        type: number
+      SHAPE_PARAM2:
+        type: number
+      SHAPE_PARAM3:
+        type: number
+      PROD_DEHYD:
+        type: number
+      PROD_DEHYD_COST:
+        type: number
+      SHAPE_POS1:
+        type: number
+      SHAPE_POS2:
+        type: number
+      SHAPE_POS3:
+        type: number
+      PROD_ELMT_ISO:
+        type: number
+      ORIGINAL_THICK:
+        type: number
+      NODE_DECIM:
+        type: number
+      INSERT_LINE_ORDER:
+        type: integer
+      PROD_ELMT_WEIGHT:
+        type: number
+      PROD_ELMT_REALWEIGHT:
+        type: number
+      ID_STUDY:
+        type: integer
+      SHAPECODE:
+        type: integer
+  ViewStudyEquipment:
+    type: object
+    properties:
+      ID_STUDY_EQUIPMENTS:
+        type: integer
+      EQUIP_NAME:
+        type: string
+      ID_EQUIP:
+        type: integer
+      EQP_LENGTH:
+        type: number
+      EQP_WIDTH:
+        type: number
+      EQUIP_VERSION:
+        type: number
+      ORIENTATION:
+        type: integer
+      displayName:
+        type: string
+      TExt:
+        type: number
+      dh:
+        type: array
+        items:
+          type: number
+      tr:
+        type: array
+        items:
+          type: number
+      ts:
+        type: array
+        items:
+          type: number
+      vc:
+        type: array
+        items:
+          type: number
+      top_or_QperBatch:
+        type: string
+  StudyEquipment:
+    type: object
+    properties:
+      ID_STUDY_EQUIPMENTS:
+        type: integer
+      ID_STUDY:
+        type: integer
+      ID_EQUIP:
+        type: integer
+      ID_EXH_GEN:
+        type: integer
+      ID_EXH_RES:
+        type: integer
+      ID_PIPE_GEN:
+        type: integer
+      ID_PIPE_RES:
+        type: integer
+      ID_ECONOMIC_RESULTS:
+        type: integer
+      ID_STUD_EQUIPPROFILE:
+        type: integer
+      ID_LAYOUT_GENERATION:
+        type: integer
+      ID_LAYOUT_RESULTS:
+        type: integer
+      ID_CALC_PARAMS:
+        type: integer
+      LINE_ORDER:
+        type: integer
+      STDEQP_LENGTH:
+        type: number
+      STDEQP_WIDTH:
+        type: number
+      EQP_INST:
+        type: integer
+      AVERAGE_PRODUCT_TEMEQP_WIDTHP:
+        type: number
+      AVERAGE_PRODUCT_ENTHALPY:
+        type: number
+      ENTHALPY_VARIATION:
+        type: number
+      PRECIS:
+        type: number
+      NB_MODUL:
+        type: number
+      STACKING_WARNING:
+        type: number
+      ENABLE_CONS_PIE:
+        type: number
+      EQUIP_STATUS:
+        type: number
+      RUN_CALCULATE:
+        type: integer
+      BRAIN_SAVETODB:
+        type: number
+      BRAIN_TYPE:
+        type: number
+      ID_COOLING_FAMILY:
+        type: integer
+      EQUIP_NAME:
+        type: string
+      CAPABILITIES:
+        type: integer
+      MODUL_LENGTH:
+        type: number
+      EQP_LENGTH:
+        type: number
+      EQP_WIDTH:
+        type: number
+      EQUIP_VERSION:
+        type: number
+      STD:
+        type: integer
+      ITEM_TR:
+        type: number
+      NB_TR:
+        type: integer
+      SERIES_NAME:
+        type: string
+      BATCH_PROCESS:
+        type: integer
+      ORIENTATION:
+        type: integer
+      equipment:
+        $ref: '#/definitions/Equipment'
+  GenMeshParams:
+    type: object
+    properties:
+      dim1:
+        type: number
+      dim2:
+        type: number
+      dim3:
+        type: number
+  ViewOpenStudy:
+    type: object
+    properties:
+      mine:
+        type: array
+        items:
+          $ref: '#/definitions/Study'
+      others:
+        type: array
+        items:
+          $ref: '#/definitions/Study'
+  ViewComponents:
+    type: object
+    properties:
+      active:
+        type: array
+        items:
+          $ref: '#/definitions/Component'
+      sleeping:
+        type: array
+        items:
+          $ref: '#/definitions/Component'
+  ProductUpdateParams:
+    type: object
+    properties:
+      name:
+        required: false
+        type: string
+      dim1:
+        required: false
+        type: number
+      dim2:
+        required: false
+        type: number
+      dim3:
+        required: false
+        type: number
+  ChangePassword:
+    type: object
+    properties:
+      oldPass:
+        type: string
+      newPass:
+        type: string
+  Constructors:
+    type: object
+    properties:
+      CONSTRUCTOR:
+        type: string
+  MonetaryCurrency:
+    type: object
+    properties:
+      ID_MONETARY_CURRENCY:
+        type: integer
+      MONEY_TEXT:
+        type: string
+      MONEY_SYMB:
+        type: string
+  Units:
+    type: object
+    properties:
+      ID_USER:
+        type: integer
+      ID_UNIT:
+        type: integer
+      TYPE_UNIT:
+        type: integer
+      SYMBOL:
+        type: string
+      COEFF_A:
+        type: number
+      COEFF_B:
+        type: number
+      listSymbol:
+        type: object
+  Langue:
+    type: object
+    properties:
+      langId:
+        type: integer
+      monetaryId:
+        type: integer
+  DefaultEquipment:
+    type: object
+    properties:
+      energyId:
+        type: integer
+      construct:
+        type: string
+      familyId:
+        type: integer
+      stdId:
+        type: integer
+      batchProcess:
+        type: integer
+      equipseriesId:
+        type: integer
+  Profile:
+    type: object
+    properties:
+      Langue:
+        $ref: '#/definitions/Langue'
+      DefaultEquipment:
+        $ref: '#/definitions/DefaultEquipment'
+      UnitsUsers:
+        $ref: '#/definitions/Units'
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: >
+      For accessing the API a valid JWT token must be passed in all the queries
+      in
+
+      the 'Authorization' header.
+
+
+
+      A valid JWT token is generated by the API and retourned as answer of a
+      call
+
+      to the route /login giving a valid user & password.
+
+
+
+      The following syntax must be used in the 'Authorization' header :
+
+          Bearer xxxxxx.yyyyyyy.zzzzzz
+security:
+  - Bearer: []

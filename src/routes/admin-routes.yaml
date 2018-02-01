@@ -1,0 +1,200 @@
+paths:
+  /admin/users:
+    get:
+      operationId: getUsers
+      tags:
+      - admin
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ViewUsers"
+    put:
+      consumes:
+      - application/x-www-form-urlencoded
+      operationId: newUser
+      tags:
+      - admin
+      description: Create new user
+      parameters:
+      - name: body
+        in: body
+        required: true
+        description: body create new user
+        schema:
+          $ref: "#/definitions/NewUser"
+      responses:
+        "200":
+          description: ok
+          schema:
+              type: integer
+        "422":
+          description: missing data
+  /admin/users/{id}:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      operationId: updateUser
+      tags:
+      - admin
+      description: update user
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        description: body update user
+        schema:
+          $ref: "#/definitions/NewUser"
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: array
+            items:
+              type: integer
+        "422":
+          description: missing data
+    delete:
+      operationId: deleteUser
+      tags:
+      - admin
+      description: delete user
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: user was deleted successfully
+  /admin/connections/{id}:
+    post:
+      operationId: disconnectUser
+      tags:
+      - admin
+      parameters:
+        - name: id
+          in: path
+          description: User id
+          required: true
+          type: integer
+        - name: reset
+          in: query
+          description: status disconnect user
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: User was deleted successfully
+  /admin/connections:
+    get:
+      operationId: loadConnections
+      tags:
+      - admin
+      parameters:
+      - name: record
+        in: query
+        description: number record connections
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Connection"
+  /admin/units:
+    get:
+      operationId: units
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: "#/definitions/ViewUnits"
+  /unit:
+    put:
+      operationId: createUnit
+      description: create a new unit
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: unit
+          description: The monetary currency to create.
+          schema:
+            $ref: "#/definitions/Units"
+      responses:
+        "200":
+          schema:
+            $ref: "#/definitions/Units"
+          description: OK, created
+        "500":
+          description: Not ok
+          schema:
+            $ref: "#/definitions/Error"
+    patch:
+      operationId: saveUnit
+      parameters:
+      - in: body
+        name: body
+        schema:
+          $ref: "#/definitions/Units"
+      responses:
+        "200":
+          description: edit Unit By Id
+          schema:
+            $ref: "#/definitions/Units"
+        "500":
+          description: Not ok
+          schema:
+            $ref: "#/definitions/Error"
+  /monetaryCurrency:
+    put:
+      operationId: createMonetaryCurrency
+      description: create a new monetary currency
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: monetaryCurrency
+          description: The monetary currency to create.
+          schema:
+            $ref: "#/definitions/MonetaryCurrency"
+      responses:
+        "200":
+          schema:
+            $ref: "#/definitions/MonetaryCurrency"
+          description: OK, created
+    patch:
+      operationId: saveMonetaryCurrency
+      parameters:
+      - in: body
+        name: body
+        schema:
+          $ref: "#/definitions/MonetaryCurrency"
+      responses:
+        "200":
+          description: edit MonetaryCurrency By Id
+          schema:
+            $ref: "#/definitions/MonetaryCurrency"
+  /monetaryCurrency/{id}:
+    get:
+      operationId: getMonetaryCurrencyById
+      parameters:
+        - name: id
+          in: path
+          description: MonetaryCurrency ID
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: get MonetaryCurrency By Id
+          schema:
+            $ref: "#/definitions/MonetaryCurrency"

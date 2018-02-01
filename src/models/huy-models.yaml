@@ -1,0 +1,54 @@
+definitions:
+  Error:
+    type: object
+    properties:
+      code:
+        type: number
+      message:
+        type: string
+  ViewLineList:
+    type: object
+    properties:
+      dataResultExist:
+        $ref: "#/definitions/VariabelLine"
+      dataResult:
+        $ref: "#/definitions/VariabelLine"
+  VariabelLine:
+    type: object
+    properties:
+      elbows:
+        type: string
+      elbowsnumber:
+        type: number
+      gastemp:
+        type: number
+      height:
+        type: number
+      insulatedline:
+        type: string
+      insulatedlineval:
+        type: string
+      insulllenght:
+        type: number
+      insulvallenght:
+        type: number
+      non_insulated_line:
+        type: string
+      non_insulated_valves:
+        type: string
+      noninsulatevallenght:
+        type: number
+      noninsullenght:
+        type: number
+      pressuer:
+        type: number
+      tee:
+        type: string
+      teenumber:
+        type: number
+      diameter:
+        type: number
+      insulationType:
+        type: integer
+      storageTank:
+        type: string
